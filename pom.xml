@@ -123,6 +123,7 @@
         <module>acl</module>
         <module>example</module>
         <module>container</module>
+        <module>client-ext</module>
     </modules>
 
     <build>
@@ -456,6 +457,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>rocketmq-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>rocketmq-client-ext</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
