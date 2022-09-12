@@ -88,8 +88,10 @@ public class HAService {
 
     public void notifyTransferSome(final long offset) {
         for (long value = this.push2SlaveMaxOffset.get(); offset > value; ) {
+            // 更新从服务器已写入的offset ACK
             boolean ok = this.push2SlaveMaxOffset.compareAndSet(value, offset);
             if (ok) {
+                // 唤醒groupTransferService(同步写)
                 this.groupTransferService.notifyTransferSome();
                 break;
             } else {
@@ -383,12 +385,12 @@ public class HAService {
             int remain = READ_MAX_BUFFER_SIZE - this.dispatchPosition;
             if (remain > 0) {
                 this.byteBufferRead.position(this.dispatchPosition);
-
+                // 将拆包的信息写到backup
                 this.byteBufferBackup.position(0);
                 this.byteBufferBackup.limit(READ_MAX_BUFFER_SIZE);
                 this.byteBufferBackup.put(this.byteBufferRead);
             }
-
+            // byteBufferBackup 与 byteBufferRead 引用交换
             this.swapByteBuffer();
 
             this.byteBufferRead.position(remain);
